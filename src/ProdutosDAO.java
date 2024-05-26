@@ -17,6 +17,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
+
 
 
 public class ProdutosDAO {
@@ -35,5 +37,37 @@ public class ProdutosDAO {
             e.printStackTrace();
             return false;
         }
+    }
+    public ArrayList<ProdutosDTO> listarProdutos() {
+        ArrayList<ProdutosDTO> lista = new ArrayList<>();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = new conectaDAO().connectDB(); // Corrija o nome da classe de conexão se necessário
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT * FROM produtos");
+
+            while (rs.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+                produto.setId(rs.getInt("id"));
+                produto.setNome(rs.getString("nome"));
+                produto.setValor(rs.getInt("valor"));
+                produto.setStatus(rs.getString("status"));
+                lista.add(produto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return lista;
     }
 }
