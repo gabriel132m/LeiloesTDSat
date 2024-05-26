@@ -20,16 +20,18 @@ teste commit
 public class conectaDAO {
     
     public Connection connectDB(){
-        Connection conn = null;
-        
+                
         try {
         
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/uc11?user=root&password=");
+            String url = "jdbc:mysql://localhost/uc11?useSSL=false";
+            String user = "root";
+            String password = "123456";
             
-        } catch (SQLException erro){
-            JOptionPane.showMessageDialog(null, "Erro ConectaDAO" + erro.getMessage());
-        }
-        return conn;
+            Connection conn = DriverManager.getConnection(url, user, password);
+                        
+         return conn;
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao conectar ao banco de dados", e);
     }
-    
+    }
 }
