@@ -1,10 +1,14 @@
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+
 
 public class listagemVIEW extends javax.swing.JFrame {
-
+    private ProdutosDAO produtosdao;
+    
     public listagemVIEW() {
         initComponents();
+        produtosdao = new ProdutosDAO(); // Criar uma instância de ProdutosDAO
         listarProdutos();
     }
 
@@ -119,11 +123,29 @@ public class listagemVIEW extends javax.swing.JFrame {
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
         String id = id_produto_venda.getText();
-        
-        ProdutosDAO produtosdao = new ProdutosDAO();
-        
-        //produtosdao.venderProduto(Integer.parseInt(id));
-        listarProdutos();
+         // Verificar se o campo ID está vazio
+    if (id.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Por favor, insira o ID do produto.");
+        return;
+    }
+
+    try {
+        int idProduto = Integer.parseInt(id);
+
+        // Chamar o método para vender o produto pelo ID
+        boolean vendaSucesso = produtosdao.venderProduto(idProduto);
+
+        if (vendaSucesso) {
+            JOptionPane.showMessageDialog(this, "Produto vendido com sucesso!");
+
+            // Atualizar a lista de produtos após a venda
+            listarProdutos();
+        } else {
+            JOptionPane.showMessageDialog(this, "Falha ao vender o produto. Verifique o ID e tente novamente.");
+        }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Por favor, insira um ID válido.");
+    }
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed

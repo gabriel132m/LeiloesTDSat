@@ -22,6 +22,46 @@ import java.sql.Statement;
 
 
 public class ProdutosDAO {
+    public boolean venderProduto(int idProduto) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = new conectaDAO().connectDB();
+            String sql = "UPDATE produtos SET status = ? WHERE id = ?";
+            stmt = conn.prepareStatement(sql);
+            
+            // Setar os parâmetros da consulta
+            stmt.setString(1, "Vendido");
+            stmt.setInt(2, idProduto);
+            
+            // Executar a atualização
+            int rowsAffected = stmt.executeUpdate();
+            
+            // Verificar se a atualização foi bem-sucedida
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            // Fechar conexão e statement
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
     public boolean cadastrarProduto(ProdutosDTO produto) {
         Connection conn = new conectaDAO().connectDB();
         String sql = "INSERT INTO produtos (nome, valor, status) VALUES (?, ?, ?)";
